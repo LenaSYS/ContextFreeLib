@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+ 		<script src="contextfreegrammar.js"></script> 
+
+		<title>grammar</title>
+
+	</head>
+
+	<body>
+ 	<p id="blobb">Testing</p>
+	<textarea cols="80" rows="25" id="clobber"></textarea>
+	<p><a href="#" onClick="document.getElementById('clobber').value='';for(var i=0;i<20;i++){sentence=generate_sentence(0.5,0.5,0.5,0.5,0,0,0,0,0,0,0);document.getElementById('clobber').value+=sentence;}">Generate scentences</a></p>
+	</body>
+</html>

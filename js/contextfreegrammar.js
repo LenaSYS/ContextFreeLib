@@ -128,7 +128,7 @@ function generate_sentence(probnounphrase,probverbphrase,probdualajdectives,prob
 				
 	var nonounphrases=countfinds("[nounphrase]",sentence);	
 	for(var i=0;i<nonounphrases;i++){
-		if(getRandomInt(0,2)>=probnounphrase){
+		if((getRandomInt(0,100)/100.0)>=probnounphrase){
 
 				var replacestring=randomword(determiner,distributiondeterminers);
 
@@ -175,7 +175,7 @@ function generate_sentence(probnounphrase,probverbphrase,probdualajdectives,prob
 	// Replace all verbphrases with "verb" or "adverb verb"			
 	nonounphrases=countfinds("[verbphrase]",sentence);			
 	for(i=0;i<nonounphrases;i++){
-		if(getRandomInt(0, 2)>=probverbphrase){
+		if((getRandomInt(0, 100)/100.0)>=probverbphrase){
 				sentence=replacen("[verbphrase]","[verb]",sentence,0);					
 		}else{
 				sentence=replacen("[verbphrase]","[adverb] [verb]",sentence,0);							
@@ -185,7 +185,7 @@ function generate_sentence(probnounphrase,probverbphrase,probdualajdectives,prob
 	// Replace some adjectives with two adjectives
 	adjectives=countfinds("[adjective]",sentence);			
 	for(var i=0;i<adjectives;i++){
-		if(getRandomInt(0, 2)>=probdualajdectives){
+		if((getRandomInt(0, 100)/100.0)>=probdualajdectives){
 			sentence=replacen("[adjective]","[dual adjective]",sentence,0);					
 		}			
 	}

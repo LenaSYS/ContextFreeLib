@@ -37,41 +37,6 @@ function randomword(list, distribution) {
 }
 
 /*
- * function replacen(search, replace, subject, n)
- *
- * Replaces term "search" with "replace" at the first occurrence after position "n" in string "subject"
- */
-function replacen(search, replace, subject, n) {
-	var foundpos = 0;
-	var beforestr = "";
-	var afterstr = "";
-
-	// TODO: make sure we start from n
-
-	foundpos = subject.indexOf(search);
-
-	if (foundpos != -1) {
-		beforestr = subject.substr(0, foundpos);
-		afterstr = subject.substr(foundpos + search.length);
-		subject = beforestr + replace + afterstr;
-	}
-
-	return subject;
-}
-
-function countfinds(search, subject) {
-	var n = 0;
-	var count = 0;
-	var index = 0;
-	while (n >= 0) {
-		n = subject.indexOf(search, index);
-		if (n != -1) count++;
-		index = n + search.length;
-	}
-	return count;
-}
-
-/*
  * Then major function in the library. This is the most likely function to use.
  *
  * generate_sentence(probnounphrase, 
@@ -103,81 +68,59 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 
 	// Replace all nounphrases with "delimiter noun" or "delimiter adjective noun"
 	// Also add determiners and plural s
-
-	var nonounphrases = countfinds("[nounphrase]", sentence);
-	for (var i = 0; i < nonounphrases; i++) {
+	sentence = sentence.replaceAll("[nounphrase]", () => {
+		let replacestring = randomword(determiner, distributiondeterminers);
 		if (Math.random() >= probnounphrase) {
-
-			var replacestring = randomword(determiner, distributiondeterminers);
-
 			if (non_plural_determiner.includes(replacestring)) {
 				replacestring = " " + replacestring + " [noun]";
 			} else {
 				replacestring = " " + replacestring + " [noun]s";
 			}
-
-			sentence = replacen("[nounphrase]", replacestring, sentence, 0);
-
 		} else {
-			replacestring = randomword(determiner, distributiondeterminers);
-
 			if (non_plural_determiner.includes(replacestring)) {
 				replacestring = " " + replacestring + " [adjective] [noun]";
 			} else {
 				replacestring = " " + replacestring + " [adjective] [noun]s";
 			}
-
-			sentence = replacen("[nounphrase]", replacestring, sentence, 0);
 		}
-	}
+		return replacestring;
+	});
 
-	// Replace all noun determiners with a random determiner			
-	found = countfinds("[determiner] [noun]", sentence);
-
-	for (i = 0; i < found; i++) {
-
-		//console.log("FOO"+ sentence +found);
-		var replacestring = randomword(determiner, distributiondeterminers);
-
+	// Replace all noun determiners with a random determiner
+	sentence = sentence.replaceAll("[determiner] [noun]", () => {
+		let replacestring = randomword(determiner, distributiondeterminers);
 		if (non_plural_determiner.includes(replacestring)) {
 			replacestring = " " + replacestring + " [noun]";
 		} else {
 			replacestring = " " + replacestring + " [noun]s";
 		}
-
-		sentence = replacen("[determiner] [noun]", replacestring, sentence, 0);
-	}
+		return replacestring;
+	});
 
 	// Replace all verbphrases with "verb" or "adverb verb"			
-	nonounphrases = countfinds("[verbphrase]", sentence);
-	for (i = 0; i < nonounphrases; i++) {
+	sentence = sentence.replaceAll("[verbphrase]", () => {
 		if (Math.random() >= probverbphrase) {
-			sentence = replacen("[verbphrase]", "[verb]", sentence, 0);
+			return "[verb]";
 		} else {
-			sentence = replacen("[verbphrase]", "[adverb] [verb]", sentence, 0);
+			return "[adverb] [verb]";
 		}
-	}
+	});
 
 	// Replace some adjectives with two adjectives
-	adjectives = countfinds("[adjective]", sentence);
-	for (var i = 0; i < adjectives; i++) {
+	sentence = sentence.replaceAll("[adjective]", () => {
 		if (Math.random() >= probdualajdectives) {
-			sentence = replacen("[adjective]", "[dual adjective]", sentence, 0);
+			return "[dual adjective]";
+		} else {
+			return "[adjective]";
 		}
-	}
+	});
 
 	// Replace all dual adjectives with two adjectives
 	// One alternative to this is to insert an "and" between the two adjectives
-	dualadjectives = countfinds("[dual adjective]", sentence);
-	for (var i = 0; i < dualadjectives; i++) {
-		sentence = replacen("[dual adjective]", "[adjective] [conjunction] [adjective]", sentence, 0);
-	}
+	sentence = sentence.replaceAll("[dual adjective]", "[adjective] [conjunction] [adjective]");
 
 	// Replace all conjunctions with a random conjunction			
-	var conjunctions = countfinds("[adjective] [conjunction] [adjective]", sentence);
-	//console.log("Before conjunction loop: ["+found+"] " + sentence);
-	for (var i = 0; i < conjunctions; i++) {
-		//console.log("Before conjunction: "+sentence);			
+	sentence = sentence.replaceAll("[adjective] [conjunction] [adjective]", () => {
 		replacestring = randomword(conjunction, distributionconjunctions);
 		if (replacestring == "or") {
 			replacestring = "either [adjective] or [adjective]";
@@ -190,17 +133,15 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 		} else {
 			replacestring = "[adjective] " + replacestring + " [adjective]";
 		}
-		sentence = replacen("[adjective] [conjunction] [adjective]", replacestring, sentence, 0);
-	}
+		return replacestring;
+	});
 
 	// Replace all nouns with a random noun
 	sentence = sentence.replaceAll("[noun]", () => randomword(noun, distributionnouns));
 
 	// Replace all verbs with a random verb
 	// Verbs have modals
-
-	var found = countfinds("[verb]", sentence);
-	for (var i = 0; i < found; i++) {
+	sentence = sentence.replaceAll("[verb]", () => {
 		replacestring = randomword(verb, distributionverbs);
 		amodal = randomword(modal, distributionmodals);
 
@@ -214,9 +155,8 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 			// All others such as can shall will did etc
 			replacestring = amodal + " " + replacestring;
 		}
-
-		sentence = replacen("[verb]", replacestring, sentence, 0);
-	}
+		return replacestring;
+	});
 
 	// Replace all adverbs with a random adverb
 	sentence = sentence.replaceAll("[adverb]", () => randomword(adverb, distributionadverbs));

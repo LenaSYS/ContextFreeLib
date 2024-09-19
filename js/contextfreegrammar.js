@@ -165,7 +165,7 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 	sentence = sentence.replaceAll("[adjective]", () => randomword(adjective, distributionadjectives));
 
 	// Remove starting space and add period and make first letter capital.		
-	sentence = sentence.substr(1);
+	sentence = sentence.slice(1);
 	// remove double spaces
 	sentence = sentence.replace(/  /g, " ");
 

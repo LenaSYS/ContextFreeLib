@@ -26,11 +26,11 @@ function edify(word){
 
 function randomword(list,distribution){
 	if(distribution){
-		var r = getRandomInt(0,list.length+1);
+		var r = getRandomInt(0,list.length);
 		return list[r];			
 	} else {
 	
-		var ret=getRandomInt(0,list.length+1);
+		var ret=getRandomInt(0,list.length);
 		ret = getRandomInt(0,ret);
 		return list[ret];
 	}

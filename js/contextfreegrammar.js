@@ -1,6 +1,7 @@
 //
 // use the included function generate_sentence() to generate random sentences
 //
+var non_plural_determiner = new Array("a", "another", "any", "each", "either", "every", "her", "his", "my", "neither", "no", "one", "our", "that", "the only", "the same", "the", "this", "whatever", "which", "whichever", "your");
 var determiner = new Array("another", "other", "different", "a", "the", "zero", "one", "two", "a million", "a gazillion", "fifty", "infinite", "many", "much", "few", "little", "a couple of", "several", "most", "this", "that", "these", "those", "which", "either", "neither", "each", "every", "any", "whichever", "the same", "such", "that", "so", "some", "any", "which", "what", "whichever", "whatever", "a lot of", "many", "several", "much", "no", "neither", "a few", "a little", "some", "my", "your", "our", "his", "her", "all", "many", "several", "each", "any", "no", "enough", "sufficient", "plenty", "the only", "the", "this", "that", "these", "those", "all", "both");
 var conjunction = new Array("and", "nor", "but", "or", "yet", "both", "equally");
 var modal = new Array("ed", "s", "does", "did", "can", "shall", "will", "may", "could", "should", "would", "might", "had", "must", "did");
@@ -123,7 +124,7 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 
 			var replacestring = randomword(determiner, distributiondeterminers);
 
-			if (replacestring == "another" || replacestring == "a" || replacestring == "the" || replacestring == "one" || replacestring == "this" || replacestring == "that" || replacestring == "which" || replacestring == "either" || replacestring == "neither" || replacestring == "each" || replacestring == "every" || replacestring == "any" || replacestring == "whichever" || replacestring == "the same" || replacestring == "which" || replacestring == "whatever" || replacestring == "no" || replacestring == "my" || replacestring == "your" || replacestring == "our" || replacestring == "his" || replacestring == "her" || replacestring == "each" || replacestring == "the only" || replacestring == "the" || replacestring == "this" || replacestring == "that") {
+			if (non_plural_determiner.includes(replacestring)) {
 				replacestring = " " + replacestring + " [noun]";
 			} else {
 				replacestring = " " + replacestring + " [noun]s";
@@ -134,7 +135,7 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 		} else {
 			replacestring = randomword(determiner, distributiondeterminers);
 
-			if (replacestring == "another" || replacestring == "a" || replacestring == "the" || replacestring == "one" || replacestring == "this" || replacestring == "that" || replacestring == "which" || replacestring == "either" || replacestring == "neither" || replacestring == "each" || replacestring == "every" || replacestring == "any" || replacestring == "whichever" || replacestring == "the same" || replacestring == "which" || replacestring == "whatever" || replacestring == "no" || replacestring == "my" || replacestring == "your" || replacestring == "our" || replacestring == "his" || replacestring == "her" || replacestring == "each" || replacestring == "the only" || replacestring == "the" || replacestring == "this" || replacestring == "that") {
+			if (non_plural_determiner.includes(replacestring)) {
 				replacestring = " " + replacestring + " [adjective] [noun]";
 			} else {
 				replacestring = " " + replacestring + " [adjective] [noun]s";
@@ -152,7 +153,7 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 		//console.log("FOO"+ sentence +found);
 		var replacestring = randomword(determiner, distributiondeterminers);
 
-		if (replacestring == "another" || replacestring == "a" || replacestring == "the" || replacestring == "one" || replacestring == "much" || replacestring == "this" || replacestring == "that" || replacestring == "which" || replacestring == "either" || replacestring == "neither" || replacestring == "each" || replacestring == "every" || replacestring == "any" || replacestring == "whichever" || replacestring == "the same" || replacestring == "which" || replacestring == "whatever" || replacestring == "no" || replacestring == "my" || replacestring == "your" || replacestring == "our" || replacestring == "his" || replacestring == "her" || replacestring == "each" || replacestring == "the only" || replacestring == "the" || replacestring == "this" || replacestring == "that") {
+		if (non_plural_determiner.includes(replacestring)) {
 			replacestring = " " + replacestring + " [noun]";
 		} else {
 			replacestring = " " + replacestring + " [noun]s";

@@ -72,20 +72,6 @@ function countfinds(search, subject) {
 }
 
 /*
- * function replacerandom(placeholder, set, distribution, sentence)
- *
- * replace term "placeholder" with a random word from "set" using the distribution "distribution" in string "sentence
- *
- */
-function replacerandom(placeholder, set, distribution, sentence) {
-	var found = countfinds(placeholder, sentence);
-	for (var i = 0; i < found; i++) {
-		sentence = replacen(placeholder, randomword(set, distribution), sentence, 0);
-	}
-	return sentence;
-}
-
-/*
  * Then major function in the library. This is the most likely function to use.
  *
  * generate_sentence(probnounphrase, 
@@ -208,7 +194,7 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 	}
 
 	// Replace all nouns with a random noun
-	sentence = replacerandom("[noun]", noun, distributionnouns, sentence);
+	sentence = sentence.replaceAll("[noun]", () => randomword(noun, distributionnouns));
 
 	// Replace all verbs with a random verb
 	// Verbs have modals
@@ -232,11 +218,11 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 		sentence = replacen("[verb]", replacestring, sentence, 0);
 	}
 
-	// Replace all adverbs with a random adverb			
-	sentence = replacerandom("[adverb]", adverb, distributionadverbs, sentence);
+	// Replace all adverbs with a random adverb
+	sentence = sentence.replaceAll("[adverb]", () => randomword(adverb, distributionadverbs));
 
-	// Replace all adjectives with a random adjective			
-	sentence = replacerandom("[adjective]", adjective, distributionadjectives, sentence);
+	// Replace all adjectives with a random adjective
+	sentence = sentence.replaceAll("[adjective]", () => randomword(adjective, distributionadjectives));
 
 	// Remove starting space and add period and make first letter capital.		
 	sentence = sentence.substr(1);

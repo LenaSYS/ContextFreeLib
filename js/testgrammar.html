@@ -9,9 +9,9 @@
     {
         var sentences="";
 
-        // Generate 5 Sentences with medium probability of each word class and linear probability for all
+        // Generate 5 Sentences with medium probability of each word class and uniform probability for all
         for(var i=0;i<5;i++){
-            sentences+=generate_sentence(0.5,0.5,0.5,0.5,0,0,0,0,0,0,0);
+            sentences+=generate_sentence(0.5,0.5,0.5,0.5,false,false,false,false,false,false,false);
         }
 
         // Two line feeds
@@ -20,9 +20,10 @@
 
         // Generate a random number of up to 5 sentences with 
         //   Higher probability of more nowns and verbs Sentences should be longer since repeated nouns and verbs are common.
-        //   Normal distribution for nouns and verbs linear for all others. Nouns and Verbs early in list should appear much more commonly.
-        for(var i=0;i<Math.round(Math.random()*5.0);i++){
-            sentences+=generate_sentence(0.9,0.9,0.5,0.5,1,1,0,0,0,0,0);        
+        //   Exponential distribution for nouns and verbs uniform for all others. Nouns and Verbs early in list should appear much more commonly.
+        var count = Math.round(Math.random()*5.0);
+        for(var i=0;i<count;i++){
+            sentences+=generate_sentence(0.9,0.9,0.5,0.5,true,true,false,false,false,false,false);        
         }
 
         document.getElementById('clobber').value=sentences;

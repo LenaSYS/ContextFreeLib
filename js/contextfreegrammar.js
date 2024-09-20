@@ -77,10 +77,8 @@ function randomword(list, distribution) {
  * @returns {string} a sentence starting with a capital letter and end with ". "
  */
 function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, probstartadj, distributionnouns, distributionverbs, distributionadjectives, distributionadverbs, distributiondeterminers, distributionconjunctions, distributionmodals) {
-	var sentence = "[subject] [verbphrase] [object]";
-
-	sentence = sentence.replace("[subject]", "[nounphrase]");
-	sentence = sentence.replace("[object]", "[nounphrase]");
+	//								subject				verb				object
+	var sentence = "[nounphrase] [verbphrase] [nounphrase]";
 
 	// Replace all nounphrases with "delimiter noun" or "delimiter adjective noun"
 	// Also add determiners and plural s
@@ -102,17 +100,6 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 		return replacestring;
 	});
 
-	// Replace all noun determiners with a random determiner
-	sentence = sentence.replaceAll("[determiner] [noun]", () => {
-		let replacestring = randomword(determiner, distributiondeterminers);
-		if (non_plural_determiner.includes(replacestring)) {
-			replacestring = " " + replacestring + " [noun]";
-		} else {
-			replacestring = " " + replacestring + " [noun]s";
-		}
-		return replacestring;
-	});
-
 	// Replace all verbphrases with "verb" or "adverb verb"			
 	sentence = sentence.replaceAll("[verbphrase]", () => {
 		if (Math.random() >= probverbphrase) {
@@ -125,31 +112,24 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 	// Replace some adjectives with two adjectives
 	sentence = sentence.replaceAll("[adjective]", () => {
 		if (Math.random() >= probdualajdectives) {
-			return "[dual adjective]";
+			// Replace all dual adjectives with two adjectives
+			// One alternative to this is to insert an "and" between the two adjectives
+			replacestring = randomword(conjunction, distributionconjunctions);
+			if (replacestring == "or") {
+				replacestring = "either [adjective] or [adjective]";
+			} else if (replacestring == "nor") {
+				replacestring = "neither [adjective] nor [adjective]";
+			} else if (replacestring == "both") {
+				replacestring = "both [adjective] and [adjective]";
+			} else if (replacestring == "equally") {
+				replacestring = "equally [adjective] and [adjective]";
+			} else {
+				replacestring = "[adjective] " + replacestring + " [adjective]";
+			}
+			return replacestring;
 		} else {
 			return "[adjective]";
 		}
-	});
-
-	// Replace all dual adjectives with two adjectives
-	// One alternative to this is to insert an "and" between the two adjectives
-	sentence = sentence.replaceAll("[dual adjective]", "[adjective] [conjunction] [adjective]");
-
-	// Replace all conjunctions with a random conjunction			
-	sentence = sentence.replaceAll("[adjective] [conjunction] [adjective]", () => {
-		replacestring = randomword(conjunction, distributionconjunctions);
-		if (replacestring == "or") {
-			replacestring = "either [adjective] or [adjective]";
-		} else if (replacestring == "nor") {
-			replacestring = "neither [adjective] nor [adjective]";
-		} else if (replacestring == "both") {
-			replacestring = "both [adjective] and [adjective]";
-		} else if (replacestring == "equally") {
-			replacestring = "equally [adjective] and [adjective]";
-		} else {
-			replacestring = "[adjective] " + replacestring + " [adjective]";
-		}
-		return replacestring;
 	});
 
 	// Replace all nouns with a random noun

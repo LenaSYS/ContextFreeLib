@@ -25,7 +25,7 @@ function getRandomInt(max) {
  * @returns {"e" | "ed"} the correct ed-ified suffix
  */
 function edify(word) {
-	var subs = word.slice(-1);
+	let subs = word.slice(-1);
 	if (subs != "e") {
 		return "ed";
 	} else {
@@ -40,10 +40,10 @@ function edify(word) {
  */
 function randomword(list, distribution) {
 	if (distribution) {
-		var r = getRandomInt(list.length);
+		let r = getRandomInt(list.length);
 		return list[r];
 	} else {
-		var ret = getRandomInt(list.length);
+		let ret = getRandomInt(list.length);
 		ret = getRandomInt(ret);
 		return list[ret];
 	}
@@ -78,55 +78,49 @@ function randomword(list, distribution) {
  */
 function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, probstartadj, distributionnouns, distributionverbs, distributionadjectives, distributionadverbs, distributiondeterminers, distributionconjunctions, distributionmodals) {
 	//								subject				verb				object
-	var sentence = "[nounphrase] [verbphrase] [nounphrase]";
+	let sentence = "[nounphrase] [verbphrase] [nounphrase]";
 
 	// Replace all nounphrases with "delimiter noun" or "delimiter adjective noun"
 	// Also add determiners and plural s
 	sentence = sentence.replaceAll("[nounphrase]", () => {
-		let replacestring = randomword(DETERMINERS, distributiondeterminers);
-		if (Math.random() >= probnounphrase) {
-			if (NON_PLURAL_DETERMINERS.includes(replacestring)) {
-				replacestring = " " + replacestring + " [noun]";
-			} else {
-				replacestring = " " + replacestring + " [noun]s";
-			}
-		} else {
-			if (NON_PLURAL_DETERMINERS.includes(replacestring)) {
-				replacestring = " " + replacestring + " [adjective] [noun]";
-			} else {
-				replacestring = " " + replacestring + " [adjective] [noun]s";
-			}
+		const determiner = randomword(DETERMINERS, distributiondeterminers);
+		let rest = " [noun]"
+		if (Math.random() < probnounphrase) {
+			rest = " [adjective]" + rest;
 		}
-		return replacestring;
+		if (!NON_PLURAL_DETERMINERS.includes(determiner)) {
+			rest += "s";
+		}
+		return determiner + rest;
 	});
 
 	// Replace all verbphrases with "verb" or "adverb verb"			
 	sentence = sentence.replaceAll("[verbphrase]", () => {
-		if (Math.random() >= probverbphrase) {
-			return "[verb]";
-		} else {
+		if (Math.random() < probverbphrase) {
 			return "[adverb] [verb]";
+		} else {
+			return "[verb]";
 		}
 	});
 
 	// Replace some adjectives with two adjectives
 	sentence = sentence.replaceAll("[adjective]", () => {
-		if (Math.random() >= probdualajdectives) {
+		if (Math.random() < probdualajdectives) {
 			// Replace all dual adjectives with two adjectives
 			// One alternative to this is to insert an "and" between the two adjectives
-			replacestring = randomword(CONJUNCTIONS, distributionconjunctions);
-			if (replacestring == "or") {
-				replacestring = "either [adjective] or [adjective]";
-			} else if (replacestring == "nor") {
-				replacestring = "neither [adjective] nor [adjective]";
-			} else if (replacestring == "both") {
-				replacestring = "both [adjective] and [adjective]";
-			} else if (replacestring == "equally") {
-				replacestring = "equally [adjective] and [adjective]";
-			} else {
-				replacestring = "[adjective] " + replacestring + " [adjective]";
+			const conjuction = randomword(CONJUNCTIONS, distributionconjunctions);
+			switch (conjuction) {
+				case "or":
+					return "either [adjective] or [adjective]";
+				case "nor":
+					return "neither [adjective] nor [adjective]";
+				case "both":
+					return "both [adjective] and [adjective]";
+				case "equally":
+					return "equally [adjective] and [adjective]";
+				default:
+					return "[adjective] " + conjuction + " [adjective]";
 			}
-			return replacestring;
 		} else {
 			return "[adjective]";
 		}
@@ -138,20 +132,19 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 	// Replace all verbs with a random verb
 	// Verbs have modals
 	sentence = sentence.replaceAll("[verb]", () => {
-		replacestring = randomword(VERBS, distributionverbs);
-		amodal = randomword(MODALS, distributionmodals);
-
-		if (amodal == "s") {
-			replacestring += "s";
-		} else if (amodal == "ed") {
-			replacestring += edify(replacestring);
-		} else if (amodal == "had") {
-			replacestring = amodal + " " + replacestring + edify(replacestring);
-		} else {
-			// All others such as can shall will did etc
-			replacestring = amodal + " " + replacestring;
+		const verb = randomword(VERBS, distributionverbs);
+		const modal = randomword(MODALS, distributionmodals);
+		switch (modal) {
+			case "s":
+				return verb + "s";
+			case "ed":
+				return verb + edify(verb);
+			case "had":
+				return modal + " " + verb + edify(verb);
+			default:
+				// All others such as can shall will did etc
+				return modal + " " + verb;
 		}
-		return replacestring;
 	});
 
 	// Replace all adverbs with a random adverb
@@ -160,10 +153,6 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 	// Replace all adjectives with a random adjective
 	sentence = sentence.replaceAll("[adjective]", () => randomword(ADJECTIVES, distributionadjectives));
 
-	// Remove starting space and add period and make first letter capital.		
-	sentence = sentence.slice(1);
-	// remove double spaces
-	sentence = sentence.replace(/  /g, " ");
-
+	// Make first letter capital and add ". " to the end of the sentence
 	return sentence.charAt(0).toUpperCase() + sentence.slice(1) + ". ";
 }

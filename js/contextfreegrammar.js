@@ -21,19 +21,6 @@ function getRandomInt(max) {
 }
 
 /**
- * @param {string} word the word to ed-ify
- * @returns {"e" | "ed"} the correct ed-ified suffix
- */
-function edify(word) {
-	let subs = word.slice(-1);
-	if (subs != "e") {
-		return "ed";
-	} else {
-		return "d";
-	}
-}
-
-/**
  * @param {string[]} list words to choose from
  * @param {boolean} distribution How words are choosen. true means uniform and false means exponential (earily words are more likely)
  * @returns {string} A word from the provided list
@@ -138,9 +125,11 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 			case "s":
 				return verb + "s";
 			case "ed":
-				return verb + edify(verb);
+				// Add "d" or "ed" to the verbdepending on the verb ends with "e"
+				return verb + verb.slice(-1) === "e" ? "d" : "ed";
 			case "had":
-				return modal + " " + verb + edify(verb);
+				// Add "d" or "ed" to the verb depending on the verb ends with "e"
+				return modal + " " + verb + verb.slice(-1) === "e" ? "d" : "ed";
 			default:
 				// All others such as can shall will did etc
 				return modal + " " + verb;

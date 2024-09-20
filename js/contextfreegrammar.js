@@ -37,33 +37,45 @@ function randomword(list, distribution) {
 }
 
 // TODO: Add a Beta Prime distribution.
-// TODO: Normal distribution (where values in the middle are more likely. 
+// TODO: Normal distribution (where values in the middle are more likely.
 //			Current alternative distribution is exponential were earlier items are more likely)
 /**
  * The major function in the library. This is the most likely function to use.
- * It will generate one sentence based on the provided parameters. 
+ * It will generate one sentence based on the provided parameters.
  * The returned string will start with a capital letter and end with ". "
- * 
+ *
  * The probabilities range from 0 to 1, ex 0.9 = 90%, 0.5 = 50%, 0.25 = 25%
- * 
+ *
  * The distributions parameterns change how items are picked from the arrays of words:
  * 		true: means uniform distribution (all items are equally likely to be choosen)
  * 		false: means exponential distribution (the first items are more likely then later items)
- * 
+ *
  * @param {number} probnounphrase The probability that a noun phrase has an adjective
  * @param {number} probverbphrase The probability that a verb phrase has an adverb
  * @param {number} probdualajdectives The probability that a adjective is doubled
  * @param {number} probstartadj UNUSED
- * @param {boolean} distributionnouns 
- * @param {boolean} distributionverbs 
- * @param {boolean} distributionadjectives 
- * @param {boolean} distributionadverbs 
- * @param {boolean} distributiondeterminers 
- * @param {boolean} distributionconjunctions 
- * @param {boolean} distributionmodals 
+ * @param {boolean} distributionnouns
+ * @param {boolean} distributionverbs
+ * @param {boolean} distributionadjectives
+ * @param {boolean} distributionadverbs
+ * @param {boolean} distributiondeterminers
+ * @param {boolean} distributionconjunctions
+ * @param {boolean} distributionmodals
  * @returns {string} a sentence starting with a capital letter and end with ". "
  */
-function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, probstartadj, distributionnouns, distributionverbs, distributionadjectives, distributionadverbs, distributiondeterminers, distributionconjunctions, distributionmodals) {
+function generate_sentence(
+	probnounphrase,
+	probverbphrase,
+	probdualajdectives,
+	probstartadj,
+	distributionnouns,
+	distributionverbs,
+	distributionadjectives,
+	distributionadverbs,
+	distributiondeterminers,
+	distributionconjunctions,
+	distributionmodals
+) {
 	//								subject				verb				object
 	let sentence = "[nounphrase] [verbphrase] [nounphrase]";
 
@@ -71,7 +83,7 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 	// Also add determiners and plural s
 	sentence = sentence.replaceAll("[nounphrase]", () => {
 		const determiner = randomword(DETERMINERS, distributiondeterminers);
-		let rest = " [noun]"
+		let rest = " [noun]";
 		if (Math.random() < probnounphrase) {
 			rest = " [adjective]" + rest;
 		}
@@ -81,7 +93,7 @@ function generate_sentence(probnounphrase, probverbphrase, probdualajdectives, p
 		return determiner + rest;
 	});
 
-	// Replace all verbphrases with "verb" or "adverb verb"			
+	// Replace all verbphrases with "verb" or "adverb verb"
 	sentence = sentence.replaceAll("[verbphrase]", () => {
 		if (Math.random() < probverbphrase) {
 			return "[adverb] [verb]";

@@ -182,20 +182,24 @@ function generate_sentence(probnounphrase,probverbphrase,probdualajdectives,prob
 		}			
 	}
 	
-	// Replace some adjectives with two adjectives
-	adjectives=countfinds("[adjective]",sentence);			
-	for(var i=0;i<adjectives;i++){
-		if((getRandomInt(0, 100)/100.0)>=probdualajdectives){
-			sentence=replacen("[adjective]","[dual adjective]",sentence,0);					
-		}			
-	}
-	
-	// Replace all dual adjectives with two adjectives
-	// One alternative to this is to insert an "and" between the two adjectives
-	dualadjectives=countfinds("[dual adjective]",sentence);			
-	for(var i=0;i<dualadjectives;i++){
-		sentence=replacen("[dual adjective]","[adjective] [conjunction] [adjective]",sentence,0);					
-	}
+  // Replace some adjectives with two adjectives
+  let adjectives=countfinds("[adjective]",sentence);
+  if (typeof adjectives !== 'undefined') {
+      for(i=0;i<adjectives;i++){
+          if((getRandomInt(0, 100)/100.0)>=probdualajdectives){
+              sentence=replacen("[adjective]","[dual adjective]",sentence,0);
+          }
+      }
+  }
+
+  // Replace all dual adjectives with two adjectives
+  // One alternative to this is to insert an "and" between the two adjectives
+  let dualadjectives=countfinds("[dual adjective]",sentence);
+  if (typeof adjectives !== 'undefined') {
+      for(i=0;i<dualadjectives;i++){
+          sentence=replacen("[dual adjective]","[adjective] [conjunction] [adjective]",sentence,0);
+      }
+  }
 	
 	// Replace all conjunctions with a random conjunction			
 	var conjunctions=countfinds("[adjective] [conjunction] [adjective]",sentence);		
@@ -256,3 +260,5 @@ function generate_sentence(probnounphrase,probverbphrase,probdualajdectives,prob
 	return sentence.charAt(0).toUpperCase() + sentence.slice(1) + ". ";
 				
 }
+
+

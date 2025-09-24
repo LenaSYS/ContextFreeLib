@@ -9,6 +9,12 @@
     {
         var sentences="";
 
+        var words="";
+
+        for(var i=0;i<100;i++){
+            words+=randomword(conjunction,0)+" ";
+        }
+
         // Generate 5 Sentences with medium probability of each word class and linear probability for all
         for(var i=0;i<5;i++){
             sentences+=generate_sentence(0.5,0.5,0.5,0.5,0,0,0,0,0,0,0);
@@ -25,7 +31,7 @@
             sentences+=generate_sentence(0.9,0.9,0.5,0.5,1,1,0,0,0,0,0);        
         }
 
-        document.getElementById('clobber').value=sentences;
+        document.getElementById('clobber').value=words+"\n\n\n"+sentences;
     }
 
     </script> 
